@@ -1,7 +1,7 @@
 from typing import Any, Dict, List
 
-from .document_dataset import DocumentDataset
-from .chunkers import FixedLengthChunker, RecursiveChunker, FixedLengthChunkerChinese
+from local_datasets.document_datasets.document_dataset import DocumentDataset
+from local_datasets.document_datasets.chunkers import FixedLengthChunker, RecursiveChunker, FixedLengthChunkerChinese
 
 CHUNKERS = {
     "fixed length": FixedLengthChunker,

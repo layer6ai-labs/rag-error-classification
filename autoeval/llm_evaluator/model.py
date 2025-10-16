@@ -12,7 +12,7 @@ from local_datasets.query_datasets.query_dataset import QueryDataset
 from base import artifact
 from base.component import Component
 
-load_dotenv()
+load_dotenv(".envrc")
 
 openai_client = OpenAI()
 

@@ -24,7 +24,7 @@ with open('data/clapnq_docs.jsonl', 'w') as jsonl_file:
 
 id = 1
 question_data_list = []
-# document_data_list = []
+
 for index, row in question_train_answerable.iterrows():
     # Create a dictionary for each row
     data = {

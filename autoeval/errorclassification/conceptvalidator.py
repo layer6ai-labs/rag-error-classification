@@ -10,6 +10,10 @@ from base import artifact
 from base.artifact import QueryDatasetArtifact, PickleArtifact, PandasArtifact, \
     DocumentDatasetArtifact
 from base.component import Component
+from openai import OpenAI
+from dotenv import load_dotenv
+
+load_dotenv(".envrc")
 
 
 class ConceptValidator(Component):
@@ -22,10 +26,7 @@ class ConceptValidator(Component):
     ):
         super().__init__(out_path, **kwargs)
         self.ground_truth_threshold = ground_truth_threshold
-        from openai import OpenAI
-        from dotenv import load_dotenv
 
-        load_dotenv()
         self.client = OpenAI()
         self.llm_call_func = openai_call
         self.openai_model_name = openai_model_name

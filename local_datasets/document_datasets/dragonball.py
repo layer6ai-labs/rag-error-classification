@@ -1,6 +1,6 @@
 from typing import Any, Dict
-from .document_dataset import DocumentDataset
-from .utils import create_chunks
+from local_datasets.document_datasets.document_dataset import DocumentDataset
+from local_datasets.document_datasets.utils import create_chunks
 
 
 class DragonballDoc(DocumentDataset):

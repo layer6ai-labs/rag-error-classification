@@ -13,7 +13,7 @@ You can download the following files for training:
 - [question_train_unanswerable.tsv](https://github.com/primeqa/clapnq/raw/main/retrieval/train/question_train_unanswerable.tsv): Save this file to `data/CLAPNQ/data/question_train_unanswerable.tsv`.
 
 ## Preprocess
-Preprocessing code is available in [pre_process.py](pre_process.py). The notebook includes steps to filter English entries from the dataset and organize the data in the desired format
+Preprocessing code is available in [preprocess.py](preprocess.py). The notebook includes steps to filter English entries from the dataset and organize the data in the desired format
 
 
 ## Queries

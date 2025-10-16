@@ -1,7 +1,7 @@
 import pathlib
 
-from .dragonball import DragonballDoc
-from .clapnq import ClapnqDoc
+from local_datasets.document_datasets.dragonball import DragonballDoc
+from local_datasets.document_datasets.clapnq import ClapnqDoc
 
 DATASET_CLASSES = {
     'dragonball': DragonballDoc,

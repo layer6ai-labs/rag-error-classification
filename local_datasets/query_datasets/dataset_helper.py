@@ -1,5 +1,5 @@
 import pathlib
-from .query_dataset import DragonballQueryDataset, QueryDataset, ClapNQQueryDataset
+from local_datasets.query_datasets.query_dataset import DragonballQueryDataset, QueryDataset, ClapNQQueryDataset
 
 DATASET_CLASSES = {
     "dragonball": DragonballQueryDataset,

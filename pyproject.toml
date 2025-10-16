@@ -26,46 +26,20 @@ dependencies = [
     "spacy>=3.8.2",
     "litellm>=1.52.6",
     "rouge-score>=0.1.2",
+    "accelerate>=0.33.0",
 ]
 
-# DEV DEPENDENCIES
-[tool.pdm.dev-dependencies]
-dev = [
-    "pytest>=8.2.2",
-    "pytest-cov>=5.0.0",
-    "diff-cover>=9.0.0",
-    "ipdb>=0.13",
-]
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
 
-# PDM SCRIPTS
-[tool.pdm.scripts]
-unit_tests.cmd = "pytest --cov --cov-report xml tests"
-unit_tests.help = "Run unit tests with coverage"
-
-cov_check.cmd = "diff-cover coverage.xml --config-file pyproject.toml"
-cov_check.help = "Check unit test coverage between current branch and 'origin/main'"
-
-# UNITTEST CONFIG
-[tool.pytest.ini_options]
-pythonpath = [
-  "."
-]
-
-[tool.coverage.run]
-branch = true
-
-[tool.coverage.report]
-exclude_also = [
-  # don't complain if tests don't hit defensive assertion code
-  "raise NotImplementedError",
-  # don't complain about abstract methods
-  "@(abc\\.)?abstractmethod",
-  # don't complain about overload methods (their body is supposed to be empty)
-  "@(typing\\.)?overload",
+[tool.setuptools]
+py-modules = [
+    "autoeval",
+    "base",
+    "clients",
+    "local_datasets",
 ]
 
 [tool.ruff]
 line-length = 100
-
-[tool.diff_cover]
-compare_branch = "origin/main"
