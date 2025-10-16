@@ -1,0 +1,3 @@
+# Rename this file to .envrc 
+# Replace missing environment variables
+export OPENAI_API_KEY="<OPENAI API KEY>"

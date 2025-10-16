@@ -1,0 +1,53 @@
+defaults:
+  - _self_
+  - base_rag
+  - override hydra/job_logging: custom
+
+artifact_run_name: run0-clap
+
+loggers_disabled:
+  - absl
+  - httpx
+  - LiteLLM
+
+rag:
+  data:
+    corpus_path: data/CLAPNQ/data/clapnq_docs.jsonl
+    corpus_name: clapnq
+    load_semantic_chunks: True
+    chunking_strategy: "fixed length"
+    corpus_chunk_size: 6000
+    corpus_overlap_size: 0
+    query_path: data/CLAPNQ/data/clapnq_queries.jsonl
+    query_name: clapnq
+
+  embedding:
+    model: Alibaba-NLP/gte-large-en-v1.5
+    batch_size: 20
+    device: "cuda:0"
+
+  retrieval:
+    retrieve_topk: 5
+
+  rerank:
+    rerank_topk: 3
+    model: castorini/rank_zephyr_7b_v1_full
+    tokenizer: castorini/rank_zephyr_7b_v1_full
+    batch_size: 2
+    context_size: 16384
+    device: "cuda:0"
+
+  generator:
+    model: meta-llama/Meta-Llama-3-8B-Instruct
+    tokenizer: meta-llama/Meta-Llama-3-8B-Instruct
+    batch_size: 5
+    context_size: 8192
+    device: "cuda:1"
+
+  error_classification:
+    model_name: "gpt-4o-mini"
+    num_rounds: 10
+    concept_covered_threshold: 0.8
+    rerank_covered_threshold: 0.5
+    ground_truth_chunk_threshold: 0.8
+    ground_truth_rounds: 10

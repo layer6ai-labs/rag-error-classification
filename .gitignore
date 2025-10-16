@@ -1,0 +1,19 @@
+.pdm-python
+.venv
+venv
+.vscode
+.idea
+__pycache__
+*.log
+tmp*
+.coverage
+coverage.xml
+.ipynb_checkpoints/
+.envrc
+
+outputs/
+
+# Ignore all json and jsonl files in data directories
+data/*/data/*.json
+data/*/data/*.jsonl
+data/*/data/*.tsv
