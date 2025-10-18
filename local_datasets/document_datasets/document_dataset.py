@@ -69,7 +69,10 @@ class DocumentDataset(ABC):
 
     @abstractmethod
     def load_one_doc(
-        self, line_json: dict[str, Any], load_docs: bool = True, load_semantic_chunks: bool = False,
+        self,
+        line_json: dict[str, Any],
+        load_docs: bool = True,
+        load_semantic_chunks: bool = False,
     ):
         """
         Corpus:{id, document_record}. A document record contains:
@@ -106,7 +109,9 @@ class DocumentDataset(ABC):
             return self.__class__(self.corpus_file, True, True, self.chinese, self.corpus, chunks)
 
         if isinstance(idx, slice):
-            return self.__class__(self.corpus_file, True, True, self.chinese, self.corpus, self.chunks[idx])
+            return self.__class__(
+                self.corpus_file, True, True, self.chinese, self.corpus, self.chunks[idx]
+            )
 
         raise TypeError(f"Unknown index type {type(idx)}.")
 

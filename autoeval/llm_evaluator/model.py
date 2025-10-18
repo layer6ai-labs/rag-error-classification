@@ -16,7 +16,7 @@ load_dotenv(".envrc")
 
 openai_client = OpenAI()
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def try_until_success(
@@ -28,16 +28,16 @@ def try_until_success(
     """
     Repeatedly tries to execute a function that may raise exceptions until it succeeds.
     Uses exponential backoff between retries.
-    
+
     Args:
         func: The function to execute
         max_retries: Maximum number of retry attempts before giving up
         exceptions: Tuple of exception types to catch and retry on
         base_delay: Initial delay in seconds between retries, doubles after each attempt
-        
+
     Returns:
         The result of the successful function execution
-        
+
     Raises:
         The last exception encountered if all retries fail
     """
@@ -50,11 +50,13 @@ def try_until_success(
             if attempt == max_retries - 1:
                 raise last_exception
             # Calculate delay with exponential backoff: base_delay * 2^attempt
-            delay = base_delay * (2 ** attempt)
+            delay = base_delay * (2**attempt)
             time.sleep(delay)
-    
+
     # This should never be reached due to the raise in the loop
-    raise last_exception if last_exception else RuntimeError("Unexpected error in try_until_success")
+    raise last_exception if last_exception else RuntimeError(
+        "Unexpected error in try_until_success"
+    )
 
 
 def evaluate_answer(
@@ -131,7 +133,9 @@ class LlmEvaluator(Component):
             if unanswerable:
                 ground_truth = "I don't know."
 
-            llm_out = evaluate_answer(question, ground_truth, proposed_answer, ground_truth_citations)
+            llm_out = evaluate_answer(
+                question, ground_truth, proposed_answer, ground_truth_citations
+            )
             all_outputs.append(llm_out)
 
         return [all_outputs]

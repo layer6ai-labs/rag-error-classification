@@ -2,7 +2,12 @@ import time
 from typing import Dict, List
 
 
-def openai_call(client, messages: str | List[Dict[str, str]], max_tokens: int = 1024, model_name: str = "gpt-4o-mini") -> str:
+def openai_call(
+    client,
+    messages: str | List[Dict[str, str]],
+    max_tokens: int = 1024,
+    model_name: str = "gpt-4o-mini",
+) -> str:
     max_retries = 3
     for attempt in range(max_retries):
         try:

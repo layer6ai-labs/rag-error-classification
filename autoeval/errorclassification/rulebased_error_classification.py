@@ -5,7 +5,10 @@ import numpy as np
 import tqdm
 
 from autoeval.errorclassification.error_categories import RagFailureStage
-from autoeval.errorclassification.error_prompts import PromptInputOutput, MultiStagePromptConstructor
+from autoeval.errorclassification.error_prompts import (
+    PromptInputOutput,
+    MultiStagePromptConstructor,
+)
 from autoeval.errorclassification.utils import openai_call
 from baseconfig import LocalRagConfig
 from base import artifact
@@ -13,7 +16,8 @@ from base.artifact import (
     PickleArtifact,
     QueryDatasetArtifact,
     NumpyQueryArtifact,
-    DocumentDatasetArtifact, PandasArtifact,
+    DocumentDatasetArtifact,
+    PandasArtifact,
 )
 from base.component import Component
 from openai import OpenAI
@@ -92,26 +96,43 @@ class RuleBasedErrorClassification(Component):
                 search_chunk_ids[reranked_orders[i, j]] for j in range(self.rerank_topk)
             ]
             ground_truth_chunk = ground_truth_chunks.get(query_id, {})
-            ground_truth_chunk_ids = [k for k, v in ground_truth_chunk.items() if v > self.ground_truth_chunk_threshold]
+            ground_truth_chunk_ids = [
+                k for k, v in ground_truth_chunk.items() if v > self.ground_truth_chunk_threshold
+            ]
             ground_truth_chunk_ids = [k for k in ground_truth_chunk_ids if k != "_0"]
-            ground_truth_chunk_ids = [k for k in ground_truth_chunk_ids if k in chunk_ids_to_chunks.keys()]
+            ground_truth_chunk_ids = [
+                k for k in ground_truth_chunk_ids if k in chunk_ids_to_chunks.keys()
+            ]
 
-            rerank_contain = [chunk for chunk in reranked_chunk_ids if chunk in ground_truth_chunk_ids]
+            rerank_contain = [
+                chunk for chunk in reranked_chunk_ids if chunk in ground_truth_chunk_ids
+            ]
             exclude = [chunk for chunk in search_chunk_ids if chunk not in reranked_chunk_ids]
             exclude_contain = [chunk for chunk in exclude if chunk in ground_truth_chunk_ids]
 
             if len(ground_truth_chunk_ids) == 0:
                 suggested_stage = RagFailureStage.ANSWER_GENERATION
             else:
-                if len(rerank_contain) / len(ground_truth_chunk_ids) > self.rerank_covered_threshold:
+                if (
+                    len(rerank_contain) / len(ground_truth_chunk_ids)
+                    > self.rerank_covered_threshold
+                ):
                     suggested_stage = RagFailureStage.ANSWER_GENERATION
                 else:
                     if len(exclude_contain) / len(ground_truth_chunk_ids) > 0:
                         suggested_stage = RagFailureStage.RERANKING_FAILURES
                     else:
-                        valid_concepts = validated_concepts[validated_concepts["query_id"] == int(query_id)]
-                        pivoted_valid_concepts = valid_concepts.drop("query_id", axis=1).pivot_table(
-                            columns="concept", index="Chunk ID", values="match", aggfunc="any", fill_value=False
+                        valid_concepts = validated_concepts[
+                            validated_concepts["query_id"] == int(query_id)
+                        ]
+                        pivoted_valid_concepts = valid_concepts.drop(
+                            "query_id", axis=1
+                        ).pivot_table(
+                            columns="concept",
+                            index="Chunk ID",
+                            values="match",
+                            aggfunc="any",
+                            fill_value=False,
                         )
                         concepts_covered = np.any(pivoted_valid_concepts, axis=0)
                         if np.mean(concepts_covered) < self.concept_covered_threshold:
@@ -141,7 +162,9 @@ class RuleBasedErrorClassification(Component):
                     PromptInputOutput.SUGGESTED_STAGE: suggested_stage,
                 }
                 messages = self.prompt_constructor.construct_prompt(input_dict)
-                response = self.llm_call_func(self.client, messages, max_tokens=10240, model_name=self.model_name)
+                response = self.llm_call_func(
+                    self.client, messages, max_tokens=10240, model_name=self.model_name
+                )
                 responses.append(response)
             # self.log.info(responses)
             results[query_id] = responses

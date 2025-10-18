@@ -19,7 +19,7 @@ class DataConfig:
     """
     Chunk size during document chunking
     """
-    
+
     corpus_overlap_size: int
     """
     Chunk overlap size during document chunking

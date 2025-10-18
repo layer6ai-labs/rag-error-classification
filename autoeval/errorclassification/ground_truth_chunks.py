@@ -22,11 +22,7 @@ class GroundTruthChunks(Component):
     ]
 
     def __init__(
-        self,
-        out_path: pathlib.Path,
-        openai_model_name: str,
-        num_rounds: int = 10,
-        **kwargs
+        self, out_path: pathlib.Path, openai_model_name: str, num_rounds: int = 10, **kwargs
     ):
         super().__init__(out_path, **kwargs)
         self.model_name = openai_model_name
@@ -42,8 +38,11 @@ class GroundTruthChunks(Component):
         ground_truth_chunks: Dict[str, str],
     ) -> List[Dict[str, str]]:
         messages = [
-            {"role": "system", "content": "\n".join(self.BACKGROUND) +
-                                          "\nYour task is to identify which chunks from the ground truth document are relevant to answering the query."}
+            {
+                "role": "system",
+                "content": "\n".join(self.BACKGROUND)
+                + "\nYour task is to identify which chunks from the ground truth document are relevant to answering the query.",
+            }
         ]
 
         prompt_list = [
@@ -78,7 +77,7 @@ class GroundTruthChunks(Component):
         return {
             "queries": QueryDatasetArtifact,
             "chunks": DocumentDatasetArtifact,
-            "llmeval_results": PickleArtifact[List[Dict[str, str]]]
+            "llmeval_results": PickleArtifact[List[Dict[str, str]]],
         }
 
     @classmethod
@@ -97,9 +96,13 @@ class GroundTruthChunks(Component):
             ground_truth_chunks_dict.setdefault(doc_id, []).append(chunk)
 
         if len(queries) != len(llmeval_results):
-            raise ValueError(f"Length of queries ({len(queries)} not equal to Length of LLM"
-                             f" Eval results {len(llmeval_results)}")
-        incorrect_indices = [i for i, row in enumerate(llmeval_results) if row["label"] == "incorrect"]
+            raise ValueError(
+                f"Length of queries ({len(queries)} not equal to Length of LLM"
+                f" Eval results {len(llmeval_results)}"
+            )
+        incorrect_indices = [
+            i for i, row in enumerate(llmeval_results) if row["label"] == "incorrect"
+        ]
 
         results = {}
         for i in tqdm.tqdm(incorrect_indices, total=len(incorrect_indices)):
@@ -113,10 +116,14 @@ class GroundTruthChunks(Component):
             responses = []
             for doc_id in ground_truth_docs:
                 ground_truth_chunks = ground_truth_chunks_dict[doc_id]
-                ground_truth_chunks = {chunk["chunk_id"]: chunk["text"] for chunk in ground_truth_chunks}
+                ground_truth_chunks = {
+                    chunk["chunk_id"]: chunk["text"] for chunk in ground_truth_chunks
+                }
                 prompt = self.get_prompt(query, ground_truth, ground_truth_chunks)
                 for _ in range(self.num_rounds):
-                    response = openai_call(self.client, prompt, max_tokens=4096, model_name=self.model_name)
+                    response = openai_call(
+                        self.client, prompt, max_tokens=4096, model_name=self.model_name
+                    )
                     response = self._parse_response(response)
                     responses.extend(response)
             count_dict = dict(zip(*np.unique(responses, return_counts=True)))
@@ -132,4 +139,3 @@ class GroundTruthChunks(Component):
             response = responses[1]
         li = [w.strip() for w in response.strip("]").split(",")]
         return [r for r in li if r != ""]
-

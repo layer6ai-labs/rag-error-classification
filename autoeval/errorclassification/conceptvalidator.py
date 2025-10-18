@@ -7,8 +7,12 @@ from tqdm import tqdm
 
 from autoeval.errorclassification.utils import openai_call
 from base import artifact
-from base.artifact import QueryDatasetArtifact, PickleArtifact, PandasArtifact, \
-    DocumentDatasetArtifact
+from base.artifact import (
+    QueryDatasetArtifact,
+    PickleArtifact,
+    PandasArtifact,
+    DocumentDatasetArtifact,
+)
 from base.component import Component
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -42,9 +46,7 @@ class ConceptValidator(Component):
 
     @classmethod
     def get_output_artifacts_info(cls) -> list[tuple[str, Type[artifact.Artifact]]]:
-        return [
-            ("validated_concepts.csv", PandasArtifact)
-        ]
+        return [("validated_concepts.csv", PandasArtifact)]
 
     def _run(self) -> list[Any]:
         queries = self.get_object("queries").queries
@@ -65,12 +67,18 @@ class ConceptValidator(Component):
         for i in tqdm(incorrect_indices, total=len(incorrect_indices)):
             query = queries[i]["input"]
             ground_truth_chunk = ground_truth_chunks.get(queries[i]["query_id"], {})
-            ground_truth_chunk = [k for k, v in ground_truth_chunk.items() if v > self.ground_truth_threshold]
+            ground_truth_chunk = [
+                k for k, v in ground_truth_chunk.items() if v > self.ground_truth_threshold
+            ]
             ground_truth_chunk = [k for k in ground_truth_chunk if k != "_0"]
             for chunk_id in ground_truth_chunk:
                 if chunk_id not in chunk_ids_to_chunks:
                     self.log.warning(f"Chunk {chunk_id} is not a valid chunk.")
-            ground_truth_chunk_dic = {chunk_id: chunk_ids_to_chunks[chunk_id]["text"] for chunk_id in ground_truth_chunk if chunk_id in chunk_ids_to_chunks}
+            ground_truth_chunk_dic = {
+                chunk_id: chunk_ids_to_chunks[chunk_id]["text"]
+                for chunk_id in ground_truth_chunk
+                if chunk_id in chunk_ids_to_chunks
+            }
             if len(ground_truth_chunk_dic) == 0:
                 continue
             concepts = self.extract_concept(query)
@@ -84,7 +92,9 @@ class ConceptValidator(Component):
 
     def extract_concept(self, query: str):
         prompt = self.get_concept_prompt(query)
-        response = self.llm_call_func(self.client, messages=prompt, max_tokens=1024, model_name=self.openai_model_name)
+        response = self.llm_call_func(
+            self.client, messages=prompt, max_tokens=1024, model_name=self.openai_model_name
+        )
         return response
 
     @staticmethod
@@ -100,7 +110,9 @@ class ConceptValidator(Component):
             prompt = self.get_context_prompt(concept, chunks)
             response = self.llm_call_func(self.client, prompt, max_tokens=1024)
             matches = [pattern.match(line.strip()) for line in response.split("\n")]
-            matches = {(concept, m.group(1)): m.group(2) == "True" for m in matches if m is not None}
+            matches = {
+                (concept, m.group(1)): m.group(2) == "True" for m in matches if m is not None
+            }
             res.update(matches)
         if len(res) == 0:
             return pd.DataFrame(columns=["concept", "Chunk ID", "match"])
@@ -125,13 +137,11 @@ class ConceptValidator(Component):
             "",
             "Example 2:",
             "**Concepts**: running",
-            "**Excerpts**:"
-            "[45_3] John is running",
+            "**Excerpts**:" "[45_3] John is running",
             "[45_6] Peter is walking",
             "**Answer**:",
             "[45_3] True",
             "[45_6] False",
-
             "Question:",
             f"**Concepts**: {concept}",
             "**Excerpts**:",
@@ -171,7 +181,7 @@ class ConceptValidator(Component):
             "2018\n"
             "GreenTech Solutions Inc.\n"
             "2021\n"
-            "Reducing liabilities through debt restructuring\n"
+            "Reducing liabilities through debt restructuring\n",
         ]
         prompt_list = [
             "Consider the following questions. Your task is to list the set of distinct concepts, "
@@ -179,7 +189,7 @@ class ConceptValidator(Component):
             " someone’s answer to the question. Each concept should appear word-to-word in the"
             " question, or a very minor rewording. Here are three examples.",
             "",
-            *[f"Example {i+1}\n{example}"for i, example in enumerate(examples)],
+            *[f"Example {i+1}\n{example}" for i, example in enumerate(examples)],
             "Please fill out the ‘Concept List’ for the fourth example by providing a numbered "
             "list. You should not restate the ‘Concept List’ header. You should not put dash ('-') "
             "or numbers before each item in the list.",
@@ -187,4 +197,3 @@ class ConceptValidator(Component):
             query,
         ]
         return "\n".join(prompt_list)
-

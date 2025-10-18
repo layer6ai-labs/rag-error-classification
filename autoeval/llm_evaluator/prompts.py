@@ -93,10 +93,10 @@ def get_evaluation_prompt(
     ground_truth_citations: Optional[list[str]] = None,
 ) -> str:
     if ground_truth_citations:
-        citations = '\n\n'.join(ground_truth_citations)
+        citations = "\n\n".join(ground_truth_citations)
         citations = CITATION_TEMPLATE.format(ground_truth_citations=citations)
     else:
-        citations = ''
+        citations = ""
     return BASE_EVALUATION_PROMPT.format(
         question=question,
         ground_truth=ground_truth,

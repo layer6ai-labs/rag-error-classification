@@ -84,7 +84,9 @@ class LocalNumpyVectorDBClient:
         vectors: ScalarOrArray[Numeric],
         ids: ScalarOrArray[str] | None,
         payloads: ScalarOrArray[Dict[str, Any]] | None,
-    ) -> Tuple[NDArray[np.number[Any]], NDArray[str], NDArray[Dict[str, Any]]]:  # vectors, ids, payloads
+    ) -> Tuple[
+        NDArray[np.number[Any]], NDArray[str], NDArray[Dict[str, Any]]
+    ]:  # vectors, ids, payloads
         if ids is None:
             raise ValueError("IDs are required")
         if payloads is None:
@@ -95,7 +97,9 @@ class LocalNumpyVectorDBClient:
         payloads = self.ensure_1d(payloads, allow_higher_dim=True)
 
         if len(ids) != len(vectors):
-            raise ValueError(f"Provided number of ids {len(ids)} does not match number of vectors {len(vectors)}")
+            raise ValueError(
+                f"Provided number of ids {len(ids)} does not match number of vectors {len(vectors)}"
+            )
 
         if len(payloads) != len(vectors):
             raise ValueError(
@@ -115,27 +119,43 @@ class LocalNumpyVectorDBClient:
         orig_size = self._size
 
         self._size, self._vectors = self.pre_allocate_and_append(
-            self._vectors, vectors, orig_size=orig_size, pre_allocate_2x=self.pre_alloc_memory, always_copy=True
+            self._vectors,
+            vectors,
+            orig_size=orig_size,
+            pre_allocate_2x=self.pre_alloc_memory,
+            always_copy=True,
         )
 
         _, self._ids = self.pre_allocate_and_append(
-            self._ids, ids, orig_size=orig_size, pre_allocate_2x=self.pre_alloc_memory, always_copy=True
+            self._ids,
+            ids,
+            orig_size=orig_size,
+            pre_allocate_2x=self.pre_alloc_memory,
+            always_copy=True,
         )
 
         _, self._payloads = self.pre_allocate_and_append(
-            self._payloads, payloads, orig_size=orig_size, pre_allocate_2x=self.pre_alloc_memory, always_copy=True
+            self._payloads,
+            payloads,
+            orig_size=orig_size,
+            pre_allocate_2x=self.pre_alloc_memory,
+            always_copy=True,
         )
 
     def search(
         self,
         query_vectors: ScalarOrArray[Numeric],
         top_k: int,
-    ) -> tuple[NDArray[str], NDArray[Dict[str, Any]], NDArray[np.number[Any]]]:  # ids, payloads, distances
+    ) -> tuple[
+        NDArray[str], NDArray[Dict[str, Any]], NDArray[np.number[Any]]
+    ]:  # ids, payloads, distances
         if self._vectors is None or self._ids is None or self._payloads is None:
             raise ValueError("Cannot do search on uninitialized database")
 
         if top_k < 0:
-            raise ValueError(f"Invalid value for 'top_k': {top_k}. Expecting a non-negative integer")
+            raise ValueError(
+                f"Invalid value for 'top_k': {top_k}. Expecting a non-negative integer"
+            )
 
         query_vectors = self.ensure_2d(query_vectors)
 
@@ -162,8 +182,12 @@ class LocalNumpyVectorDBClient:
             top_k_scores = np.take_along_axis(sim_scores, top_k_indices_unsorted, axis=1)
             top_k_scores_sort_order = np.argsort(top_k_scores, axis=1)
             top_k_scores_reverse_sort_order = top_k_scores_sort_order[:, ::-1]
-            top_k_indices = np.take_along_axis(top_k_indices_unsorted, top_k_scores_reverse_sort_order, axis=1)
-            top_distances = np.take_along_axis(top_k_scores, top_k_scores_reverse_sort_order, axis=1)
+            top_k_indices = np.take_along_axis(
+                top_k_indices_unsorted, top_k_scores_reverse_sort_order, axis=1
+            )
+            top_distances = np.take_along_axis(
+                top_k_scores, top_k_scores_reverse_sort_order, axis=1
+            )
         top_ids = self.ids[top_k_indices]
         top_payloads = self.payloads[top_k_indices]
         return top_ids, top_payloads, top_distances
@@ -255,7 +279,9 @@ class LocalNumpyVectorDBClient:
             orig_size = avail_mem
         # check that original size makes sense
         if orig_size < 0 or orig_size > avail_mem:
-            raise ValueError(f"Value {orig_size} for 'orig_size' is invalid since base array size is {avail_mem}.")
+            raise ValueError(
+                f"Value {orig_size} for 'orig_size' is invalid since base array size is {avail_mem}."
+            )
         # required data size
         req_size = orig_size + len(append)
         # if we already have enough memory, we don't need to allocate anything

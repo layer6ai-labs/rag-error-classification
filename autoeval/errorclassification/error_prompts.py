@@ -54,7 +54,9 @@ class MultiStagePromptConstructor:
         doc_id, chunk_num = chunk_id.strip().rsplit("_", maxsplit=1)
         return f"Document {doc_id} Chunk {chunk_num}"
 
-    def construct_chunking_prompt(self, input_dict: Dict[PromptInputOutput, Any]) -> List[Dict[str, str]]:
+    def construct_chunking_prompt(
+        self, input_dict: Dict[PromptInputOutput, Any]
+    ) -> List[Dict[str, str]]:
         query = input_dict[PromptInputOutput.QUERY]
         ground_truth = input_dict[PromptInputOutput.GROUND_TRUTH]
         ground_truth_chunk_ids = input_dict[PromptInputOutput.GROUND_TRUTH_CHUNK_IDS]
@@ -88,7 +90,9 @@ class MultiStagePromptConstructor:
             {"role": "user", "content": "\n".join(prompt_list)},
         ]
 
-    def construct_retrieval_prompt(self, input_dict: Dict[PromptInputOutput, Any]) -> List[Dict[str, str]]:
+    def construct_retrieval_prompt(
+        self, input_dict: Dict[PromptInputOutput, Any]
+    ) -> List[Dict[str, str]]:
         errors = self.get_stage_errors(RagFailureStage.RETRIEVAL_FAILURES)
         query = input_dict[PromptInputOutput.QUERY]
         ground_truth = input_dict[PromptInputOutput.GROUND_TRUTH]
@@ -124,7 +128,9 @@ class MultiStagePromptConstructor:
             {"role": "user", "content": "\n".join(prompt_list)},
         ]
 
-    def construct_reranked_prompt(self, input_dict: Dict[PromptInputOutput, Any]) -> List[Dict[str, str]]:
+    def construct_reranked_prompt(
+        self, input_dict: Dict[PromptInputOutput, Any]
+    ) -> List[Dict[str, str]]:
         errors = self.get_stage_errors(RagFailureStage.RERANKING_FAILURES)
         query = input_dict[PromptInputOutput.QUERY]
         ground_truth = input_dict[PromptInputOutput.GROUND_TRUTH]
@@ -169,7 +175,9 @@ class MultiStagePromptConstructor:
             {"role": "user", "content": "\n".join(prompt_list)},
         ]
 
-    def construct_generator_prompt(self, input_dict: Dict[PromptInputOutput, Any]) -> List[Dict[str, str]]:
+    def construct_generator_prompt(
+        self, input_dict: Dict[PromptInputOutput, Any]
+    ) -> List[Dict[str, str]]:
         errors = self.get_stage_errors(RagFailureStage.ANSWER_GENERATION)
         query = input_dict[PromptInputOutput.QUERY]
         ground_truth = input_dict[PromptInputOutput.GROUND_TRUTH]
