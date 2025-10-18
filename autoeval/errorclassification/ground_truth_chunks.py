@@ -120,9 +120,8 @@ class GroundTruthChunks(Component):
                     response = self._parse_response(response)
                     responses.extend(response)
             count_dict = dict(zip(*np.unique(responses, return_counts=True)))
-            count_dict = {k: float(v / self.num_rounds) for k, v in count_dict.items()}
+            count_dict = {str(k): float(v / self.num_rounds) for k, v in count_dict.items()}
 
-            self.log.info(f"{i}: {count_dict}")
             results[queries[i]["query_id"]] = count_dict
         return [results]
 

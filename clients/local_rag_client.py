@@ -122,7 +122,7 @@ class LocalRagClient:
         query_results.add_query_artifacts("Rerank Order", rerank_order)
         query_results.add_query_artifacts("Generated Text", generated_text)
         # query_results.add_query_artifacts("Generate Logit", generated_logits)
-        query_results.print_result()
+        query_results.print_result(list(range(5)))
         return query_results
 
     def evaluate(self):

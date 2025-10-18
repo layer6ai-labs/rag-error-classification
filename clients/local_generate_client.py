@@ -166,7 +166,6 @@ class LocalGenerateClient:
                 for q, context_docs in zip(query[start:end], context_docs[start:end])
             ]
             text, logit = self.run_llm_batch(prompt, return_logits, device=device)
-            print(text)
             answer_list.extend(text)
             logit_list.append(logit)
 
