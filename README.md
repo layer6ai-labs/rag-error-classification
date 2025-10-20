@@ -1,5 +1,11 @@
-# rag-error-classification
-Framework for RAG and RAGEC.
+
+<p align="center">
+<a href="https://layer6.ai/"><img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/logobox.jpg" height="66"></a>
+</p>
+
+# RAG Error Classification
+Framework for RAG experimentation, and RAG Error Classification (RAGEC), accompanying the paper ["Classifying and Addressing the Diversity of Errors in Retrieval-Augmented Generation Systems"](https://arxiv.org/abs/2510.13975).
+.
 
 # Getting Started
 1. Create virtual environment using `venv`.
@@ -48,3 +54,15 @@ the running a sequence of components.
 For each run, the log of the run is saved at `./outputs/{RUN_DATE}/{RUN_TIME}/`. In the directory, you can also see the `.hydra` folder directory that
 indicates the config for that run as well. The **artifact** will be shared across runs. The path of the artifact will be specified as `artifact_path` in the main config.
 The default path is `./outputs/{DATA}/{RUN_NAME}/`. It will be changed to include the dataset names later.
+
+# Citing
+
+    @article{leung2025,
+        title={Classifying and Addressing the Diversity of Errors in Retrieval-Augmented Generation Systems}, 
+        author={Kin Kwan Leung and Mouloud Belbahri and Yi Sui and Alex Labach and Xueying Zhang and Stephen Rose and Jesse C. Cresswell},
+        journal={arXiv:2510.13975},
+        year={2025},
+    }
+
+# License
+This data and code is licensed under the MIT License, copyright by Layer 6 AI.
