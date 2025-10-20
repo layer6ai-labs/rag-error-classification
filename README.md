@@ -5,7 +5,6 @@
 
 # RAG Error Classification
 Framework for RAG experimentation, and RAG Error Classification (RAGEC), accompanying the paper ["Classifying and Addressing the Diversity of Errors in Retrieval-Augmented Generation Systems"](https://arxiv.org/abs/2510.13975).
-.
 
 # Getting Started
 1. Create virtual environment using `venv`.
